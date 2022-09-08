@@ -1,7 +1,5 @@
 import Foundation
-
-print(start)
-func charToInt(char:String) -> Int?{
+func charToInt(char:Character) -> Int?{
     switch char{
     case "a":
         return 0
@@ -57,7 +55,7 @@ func charToInt(char:String) -> Int?{
         return 25
     default:
         print("invalid letter")
-        return nil
+        return -1
     }
 }
 
@@ -76,7 +74,7 @@ func getInput() -> [String] {
     return inputString
 }
 
-func priorChar(charA:String, charB:String)->String{
+func priorChar(charA:Character, charB:Character)->Character{
     if charToInt(char:charA)! <= charToInt(char:charB)! {
         return charA
     } else {
@@ -84,7 +82,7 @@ func priorChar(charA:String, charB:String)->String{
     }
 }
 
-func postChar(charA:String, charB:String)->String{
+func postChar(charA:Character, charB:Character)->Character{
     if charToInt(char:charA)! <= charToInt(char:charB)! {
         return charB
     } else {
@@ -92,38 +90,51 @@ func postChar(charA:String, charB:String)->String{
     }
 }
 
+func returnChar(string:String, offsetBy:Int) -> Character {
+    let index = string.index(string.startIndex, offsetBy:offsetBy)
+    return string[index]
+}
 
-func sortStrings(strings:[String]) -> [[String]] {
-    let strings = strings
-    var begCharStrings: [[String]] = []
+func sortStrings(strings:[String], charCount:Int) -> [Any] {
+    var begCharStrings: [[Any]] = []
     for word in strings {
-        if begCharStrings == [[]] {
-            begCharStrings.append([word])
-        }
-        var added = false
-        for (count, array) in begCharStrings.enumerated() {
-            //compare array's first word's first letter with word's first letter
-            if array[0].prefix(1) == word.prefix(1) {
-                begCharStrings[count].append(word)
-                added = true
-                break
-            }
-        }
-        //if no array with first letter of word was found, make new array with word
-        if !added {
-            var position = 0
+        if word.count > charCount {
+            var added = false
             for (count, array) in begCharStrings.enumerated() {
-                if priorChar(charA:String(array[0].prefix(1)),charB:String(word.prefix(1))) == word.prefix(1) {
+                //compare array's first word's first letter with word's first letter
+                if returnChar(string:array[0] as! String, offsetBy:charCount) == returnChar(string:word, offsetBy:charCount) {
+                    begCharStrings[count].append(word)
+                    added = true
                     break
-                } else {
-                    position += 1
                 }
             }
-            begCharStrings.insert([word],at:position)    
-        }
+            //if no array with first letter of word was found, make new array with word
+            if !added {
+                var position = 0
+                for array in begCharStrings {                    
+                    let wordChar = returnChar(string:word, offsetBy:charCount)
+                    let arrayChar = returnChar(string:(array[0] as! String), offsetBy:charCount)
+                    if priorChar(charA:arrayChar,charB:wordChar) == wordChar {
+                        break
+                    } else if arrayChar == wordChar {
+                        break
+                    } else {
+                    position += 1
+                    }
+                }
+                begCharStrings.insert([word],at:position)    
+            }
+        } 
     }
-    return begCharStrings
+    for (count,array) in begCharStrings.enumerated() {
+        if array.count > 1 {
+            begCharStrings[count] = (sortStrings(strings: array as! [String], charCount:charCount + 1))
+        }
+        print(begCharStrings)
+    }
+    return begCharStrings 
 }
+
 
 //from apple forums
 func flatten(_ array: [Any]) -> [Any] {
@@ -142,7 +153,7 @@ let start = Foundation.clock()
 
 let input = getInput()
 print(input)
-print(flatten(sortStrings(strings:input)))
+print(flatten(sortStrings(strings:input, charCount:0)))
 
 //will print character preceding
 print(priorChar(charA: "a",charB:"b"))
