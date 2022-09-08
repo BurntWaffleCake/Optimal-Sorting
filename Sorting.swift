@@ -160,5 +160,3 @@ print(priorChar(charA: "a",charB:"b"))
 //will print character post (opposite of priorChar())
 print(postChar(charA: "a",charB:"b"))
 
-let diff = Foundation.clock() - start
-print(diff)
