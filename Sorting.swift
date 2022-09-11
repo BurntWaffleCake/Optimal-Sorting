@@ -244,6 +244,12 @@ func removeDuplicates(strings:[String]) -> [String] {
     return buffer
 }
 
+func printElements(array:[Any]) {
+    for element in array {
+          print(element)
+    }
+}
+
 print("note that duplicates will be removed")
 print("each new line will be seen as a new word")
 print("special characters are supported but it is recommended that you do not include spaces")
@@ -254,5 +260,6 @@ let noDupInput = Array(Set(input))
 print("given input", input)
 print("sorting input", noDupInput)
 
+let sortedStrings = flatten(sortStrings(strings:noDupInput, charCount:0)) 
 print(flatten(sortStrings(strings:noDupInput, charCount:0)))
-
+printElements(array: flatten(sortStrings(strings:noDupInput, charCount:0)))
