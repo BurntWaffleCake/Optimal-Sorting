@@ -173,7 +173,7 @@ func compareWords(wordA: String, wordB:String, offset:Int) -> String {
 
 func sortStrings(strings:[String], charCount:Int) -> [Any] {
     var Strings: [[Any]] = []
-     for (count,word) in strings.enumerated() {
+     for wordfg in strings {
          var added = false
         for (count, array) in Strings.enumerated() {
             //compare array's first word's first letter with word's first letter
@@ -245,7 +245,14 @@ func removeDuplicates(strings:[String]) -> [String] {
 }
 
 print("note that duplicates will be removed")
+print("each new line will be seen as a new word")
+print("special characters are supported but it is recommended that you do not include spaces")
+print("input no characters to execute the sort")
+
 let input = getInput()
-print(input)
 let noDupInput = Array(Set(input))
+print("given input", input)
+print("sorting input", noDupInput)
+
 print(flatten(sortStrings(strings:noDupInput, charCount:0)))
+
