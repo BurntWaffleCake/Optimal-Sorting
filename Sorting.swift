@@ -1,4 +1,19 @@
 import Foundation
+
+//from apple forums
+func flatten(_ array: [Any]) -> [Any] {
+    var result = [Any]()
+    for element in array {
+        if let element = element as? [Any] {
+            result.append(contentsOf: flatten(element))
+        } else {
+            result.append(element)
+        }
+    }
+    return result
+}
+
+let validLetters =  ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 func charToInt(char:Character) -> Int?{
     switch char{
     case "a":
@@ -54,7 +69,6 @@ func charToInt(char:Character) -> Int?{
     case "z":
         return 25
     default:
-        print("invalid letter")
         return -1
     }
 }
@@ -90,75 +104,148 @@ func postChar(charA:Character, charB:Character)->Character{
     }
 }
 
-func returnChar(string:String, offsetBy:Int) -> Character {
-    let index = string.index(string.startIndex, offsetBy:offsetBy)
-    return string[index]
+func returnChar(string:String, offsetBy:Int) -> Character?{
+    if string.count > offsetBy { //+1
+        let index = string.index(string.startIndex, offsetBy:offsetBy)
+        return string[index]   
+    }
+    return Character(" ")
+}
+
+func getLetters(string:String) -> String{
+    var output : String = ""
+    for char in string {
+        if charToInt(char:char)! >= 0 {
+            output += String(char)
+        }
+    }
+    return output
+}
+
+func greaterInt(IntA: Int, IntB: Int)->Int{
+    if IntA > IntB {
+        return IntA
+    } else if IntB > IntA {
+        return IntB
+    } else {
+        return IntA
+    }
+}
+func lesserInt(IntA: Int, IntB: Int)->Int{
+    if IntA < IntB {
+        return IntA
+    } else if IntB < IntA {
+        return IntB
+    } else {
+        return IntA
+    }
+}
+
+func compareWords(wordA: String, wordB:String, offset:Int) -> String { 
+    var wordA = getLetters(string:wordA)
+    var wordB = getLetters(string:wordB)
+    if wordA.count ~= wordB.count {
+        let charLocation = lesserInt(IntA:wordA.count, IntB:wordB.count) 
+        if wordA.count > wordB.count {
+            wordA += " ."
+        } else {
+            wordB += " ."
+        }
+        if charLocation < offset {
+            let wordAChar = returnChar(string:wordA, offsetBy:charLocation)!
+            let wordBChar = returnChar(string:wordB, offsetBy:charLocation)!
+            if priorChar(charA:wordAChar,charB:wordBChar) == wordAChar {
+                return wordA
+            } else {
+                return wordB
+            }
+        }
+        
+    }
+    let wordAChar = returnChar(string:wordA, offsetBy:offset)!
+    let wordBChar = returnChar(string:wordB, offsetBy:offset)!
+    if priorChar(charA:wordAChar,charB:wordBChar) == wordAChar {
+        return wordA
+    } else {
+        return wordB
+    }
 }
 
 func sortStrings(strings:[String], charCount:Int) -> [Any] {
-    var begCharStrings: [[Any]] = []
-    for word in strings {
-        if word.count > charCount {
-            var added = false
-            for (count, array) in begCharStrings.enumerated() {
-                //compare array's first word's first letter with word's first letter
-                if returnChar(string:array[0] as! String, offsetBy:charCount) == returnChar(string:word, offsetBy:charCount) {
-                    begCharStrings[count].append(word)
-                    added = true
+    var Strings: [[Any]] = []
+     for (count,word) in strings.enumerated() {
+         var added = false
+        for (count, array) in Strings.enumerated() {
+            //compare array's first word's first letter with word's first letter
+            if returnChar(string:getLetters(string:array[0] as! String), offsetBy:charCount) == returnChar(string:getLetters(string:word), offsetBy:charCount) {
+                Strings[count].append(word)
+                added = true
+                break
+            }
+        }
+        //if no array with first letter of word was found, make new array with word
+        if !added {
+            var position = 0
+            for array in Strings {
+                if compareWords(wordA: word,wordB: array[0] as! String,offset: charCount) == word {
                     break
-                }
-            }
-            //if no array with first letter of word was found, make new array with word
-            if !added {
-                var position = 0
-                for array in begCharStrings {                    
-                    let wordChar = returnChar(string:word, offsetBy:charCount)
-                    let arrayChar = returnChar(string:(array[0] as! String), offsetBy:charCount)
-                    if priorChar(charA:arrayChar,charB:wordChar) == wordChar {
-                        break
-                    } else if arrayChar == wordChar {
-                        break
-                    } else {
+                } else {
                     position += 1
-                    }
                 }
-                begCharStrings.insert([word],at:position)    
             }
-        } 
-    }
-    for (count,array) in begCharStrings.enumerated() {
+            Strings.insert([word],at:position)    
+        }
+     }
+     
+    for (count,array) in Strings.enumerated() {
         if array.count > 1 {
-            begCharStrings[count] = (sortStrings(strings: array as! [String], charCount:charCount + 1))
+            Strings[count] = (sortStrings(strings: array as! [String], charCount:charCount + 1))
+            // var same = false
+            // for word in array {
+            //     if word as! String == array[0] as! String {
+            //         same = true
+            //         break
+            //     }
+                
+            //     // if findWord(array:array as! [String], word: word as! String) == true {
+            //     //     same = true
+            //     //     print("duplicate found")
+            //     //     break
+            //     // }
+            // }
         }
-        print(begCharStrings)
     }
-    return begCharStrings 
+    return Strings 
 }
 
 
-//from apple forums
-func flatten(_ array: [Any]) -> [Any] {
-    var result = [Any]()
-    for element in array {
-        if let element = element as? [Any] {
-            result.append(contentsOf: flatten(element))
-        } else {
-            result.append(element)
+func findWord(array:[String], word: String) -> Bool{
+    for (count, word) in array.enumerated() {
+        for (testCount, testWord) in array.enumerated() {
+            if testWord == word && count != testCount {
+                return true
+            } else {
+                return false
+            }
         }
     }
-    return result
+    return false
 }
 
-let start = Foundation.clock()
+func removeDuplicates(strings:[String]) -> [String] {
+    var buffer : [String] = []
+    for word in strings {
+        for testWord in buffer {
+            if word != testWord {
+                buffer.append(word)
+            }
+        }
+    }
+    return buffer
+}
 
+print("note that duplicates will be removed")
 let input = getInput()
 print(input)
-print(flatten(sortStrings(strings:input, charCount:0)))
-
-//will print character preceding
-print(priorChar(charA: "a",charB:"b"))
-//will print character post (opposite of priorChar())
-print(postChar(charA: "a",charB:"b"))
-
-let diff = Foundation.clock() - start
-print(diff)
+let noDupInput = Array(Set(input))
+print(flatten(sortStrings(strings:noDupInput, charCount:0)))
