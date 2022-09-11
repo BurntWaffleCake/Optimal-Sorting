@@ -173,7 +173,7 @@ func compareWords(wordA: String, wordB:String, offset:Int) -> String {
 
 func sortStrings(strings:[String], charCount:Int) -> [Any] {
     var Strings: [[Any]] = []
-     for wordfg in strings {
+     for word in strings {
          var added = false
         for (count, array) in Strings.enumerated() {
             //compare array's first word's first letter with word's first letter
