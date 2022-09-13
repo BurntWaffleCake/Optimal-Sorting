@@ -1,5 +1,19 @@
 import Foundation
 
+let path = "random.txt"
+let randomWords : [String] = []
+
+do {
+    let contents = try NSString(contentsOfFile: path, encoding: String.Encoding.ascii.rawValue)
+    var count = 10
+    contents.enumerateLines({ (line, stop) -> () in
+                                if count > 0 {
+                                    randomWords.append(line)
+                                    count += 1
+                                }
+                            })
+}
+
 //from apple forums
 func flatten(_ array: [Any]) -> [Any] {
     var result = [Any]()
@@ -255,7 +269,10 @@ print("each new line will be seen as a new word")
 print("special characters are supported but it is recommended that you do not include spaces")
 print("input no characters to execute the sort")
 
+
+
 let input = getInput()
+let start = DispatchTime.now()
 let noDupInput = Array(Set(input))
 print("given input", input)
 print("sorting input", noDupInput)
@@ -263,3 +280,7 @@ print("sorting input", noDupInput)
 let sortedStrings = flatten(sortStrings(strings:noDupInput, charCount:0)) 
 print(flatten(sortStrings(strings:noDupInput, charCount:0)))
 printElements(array: flatten(sortStrings(strings:noDupInput, charCount:0)))
+let end = DispatchTime.now()
+let differenceNano = end.uptimeNanoseconds - start.uptimeNanoseconds
+let runtime = differenceNano / 1_000_000
+print("Runtime: \(runtime)")
