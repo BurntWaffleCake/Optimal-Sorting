@@ -5,7 +5,7 @@ var randomWords : [String] = []
 
 do {
     let contents = try NSString(contentsOfFile: path, encoding: String.Encoding.ascii.rawValue)
-    var count = 100
+    var count = 1000
     
     contents.enumerateLines({ (line, stop) -> () in
                                 if count > 0 {
@@ -158,33 +158,39 @@ func lesserInt(IntA: Int, IntB: Int)->Int{
 }
 
 func compareWords(wordA: String, wordB:String, offset:Int) -> String { 
-    var wordALower = getLetters(string:wordA)
-    var wordBLower = getLetters(string:wordB)
-    if wordALower.count ~= wordBLower.count {
-        let charLocation = lesserInt(IntA:wordALower.count, IntB:wordBLower.count) 
-        if wordALower.count > wordBLower.count {
-            wordALower += " "
-        } else {
-            wordBLower += " "
-        }
-        if charLocation < offset {
-            let wordAChar = returnChar(string:wordALower, offsetBy:charLocation)!
-            let wordBChar = returnChar(string:wordBLower, offsetBy:charLocation)!
-            if priorChar(charA:wordAChar,charB:wordBChar) == wordAChar {
-                return wordA
-            } else {
-                return wordB
-            }
-        }
-        
-    }
-    let wordAChar = returnChar(string:wordA, offsetBy:offset)!
-    let wordBChar = returnChar(string:wordB, offsetBy:offset)!
-    if priorChar(charA:wordAChar,charB:wordBChar) == wordAChar {
+    if wordA < wordB {
         return wordA
     } else {
         return wordB
     }
+
+    // var wordALower = getLetters(string:wordA)
+    // var wordBLower = getLetters(string:wordB)
+    // if wordALower.count ~= wordBLower.count {
+    //     let charLocation = lesserInt(IntA:wordALower.count, IntB:wordBLower.count) 
+    //     if wordALower.count > wordBLower.count {
+    //         wordALower += " "
+    //     } else {
+    //         wordBLower += " "
+    //     }
+    //     if charLocation < offset {
+    //         let wordAChar = returnChar(string:wordALower, offsetBy:charLocation)!
+    //         let wordBChar = returnChar(string:wordBLower, offsetBy:charLocation)!
+    //         if priorChar(charA:wordAChar,charB:wordBChar) == wordAChar {
+    //             return wordA
+    //         } else {
+    //             return wordB
+    //         }
+    //     }
+        
+    // }
+    // let wordAChar = returnChar(string:wordA, offsetBy:offset)!
+    // let wordBChar = returnChar(string:wordB, offsetBy:offset)!
+    // if priorChar(charA:wordAChar,charB:wordBChar) == wordAChar {
+    //     return wordA
+    // } else {
+    //     return wordB
+    // }
 }
 
 func sortStrings(strings:[String], charCount:Int) -> [Any] {
@@ -285,17 +291,21 @@ var randomWordsLower : [String] = []
 for word in randomWords {
     randomWordsLower.append(word.lowercased())
 }
-let start = DispatchTime.now()
-let sortedStrings = flatten(sortStrings(strings: randomWordsLower, charCount:0))
 
 // let sortedStrings = flatten(sortStrings(strings:noDupInput, charCount:0)) 
 // print(sortedStrings)
 // printElements(array: sortedStrings)
-let end = DispatchTime.now()
+
 //printElements(array: sortedStrings)
-let differenceNano = end.uptimeNanoseconds - start.uptimeNanoseconds
+
+for _ in 0..<5 {
+    let start = DispatchTime.now()
+    let sortedStrings = flatten(sortStrings(strings: randomWordsLower, charCount:0))
+    let end = DispatchTime.now()
+    let differenceNano = end.uptimeNanoseconds - start.uptimeNanoseconds
 let runtime = Double(differenceNano) / 1_000_000.0
 print("Runtime: \(runtime) ms")
+}
 
 
 let start2 = DispatchTime.now()
