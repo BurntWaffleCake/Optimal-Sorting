@@ -48,15 +48,29 @@ func sortStrings(strings:[String], charCount:Int) -> [Any] {
     var Strings: [[Any]] = []
     for word in strings {
         var added = false
-        for (count, array) in Strings.enumerated() {
-            //compare array's first word's first letter with word's first letter
-            if returnChar(string:array[0] as! String, offsetBy:charCount) == returnChar(string:word, offsetBy:charCount) {
-                if charCount <= word.count {
-                    Strings[count].append(word)
-                    added = true
+        if word < "m" {
+            for (count, array) in Strings.enumerated() {
+                //compare array's first word's first letter with word's first letter
+                if returnChar(string:array[0] as! String, offsetBy:charCount) == returnChar(string:word, offsetBy:charCount) {
+                    if charCount <= word.count {
+                        Strings[count].append(word)
+                        added = true
+                    }
+                    break
                 }
-                break
             }
+        } else {
+            for (count, array) in Strings.reversed().enumerated() {
+                //compare array's first word's first letter with word's first letter
+                if returnChar(string:array[0] as! String, offsetBy:charCount) == returnChar(string:word, offsetBy:charCount) {
+                    if charCount <= word.count {
+                        Strings[count].append(word)
+                        added = true
+                    }
+                    break
+                }
+            }
+            
         }
         
         //if no array with first letter of word was found, make new array with word
@@ -82,15 +96,16 @@ func sortStrings(strings:[String], charCount:Int) -> [Any] {
 }
 
 /* lowercased sort */
-// var randomWordsLower : [String] = []
-// for word in randomWords {
-//     randomWordsLower.append(word.lowercased())
-// }
+var randomWordsLower : [String] = []
+for word in randomWords {
+    randomWordsLower.append(word.lowercased())
+}
 
 for _ in 0..<5 {
     let start = DispatchTime.now()
-    let sortedStrings = flatten(sortStrings(strings: randomWords, charCount:0))
+    let sortedStrings = flatten(sortStrings(strings: randomWordsLower, charCount:0))
     let end = DispatchTime.now()
+    print(sortedStrings)
     let differenceNano = end.uptimeNanoseconds - start.uptimeNanoseconds
     let runtime = Double(differenceNano) / 1_000_000.0
     print("Runtime: \(runtime) ms")
