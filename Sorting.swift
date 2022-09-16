@@ -79,7 +79,7 @@ func sortStrings(strings:[String], charCount:Int) -> [Any] {
 //     randomWordsLower.append(word.lowercased())
 // }
 
-for _ in 0..<1 {
+for _ in 0..<5 {
     let start = DispatchTime.now()
     let sortedStrings = flatten(sortStrings(strings: randomWords, charCount:0))
 
